@@ -1,0 +1,9 @@
+# ESP-IDF
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+# Credenciales locales
+*.secret
+secrets.h

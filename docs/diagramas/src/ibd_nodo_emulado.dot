@@ -1,0 +1,62 @@
+digraph IBD2 {
+  graph [rankdir=LR, fontname="DejaVu Sans", nodesep=0.35, ranksep=1.1, pad=0.3,
+         label="ibd [Bloque] Nodo Emulado (nodo 2) — Diagrama de Bloques Internos", labelloc=t, fontsize=16];
+  node  [fontname="DejaVu Sans", fontsize=10, shape=plain];
+  edge  [fontname="DejaVu Sans", fontsize=9, arrowhead=none, penwidth=1.3];
+
+  subgraph cluster_nodo {
+    label="«block» Nodo Emulado"; style="rounded"; color="#2B6CB0"; penwidth=2; fontsize=13;
+
+    esp [label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#EAF2FB">
+      <TR><TD COLSPAN="2" BGCOLOR="#2C5282"><FONT COLOR="white"><B>mcu : ESP32 DevKit</B></FONT></TD></TR>
+      <TR><TD PORT="a34">GPIO34 · ADC1_CH6 (pulso)</TD><TD PORT="pwm">GPIO18 · LEDC PWM 50 Hz</TD></TR>
+      <TR><TD PORT="a35">GPIO35 · ADC1_CH7 (SpO₂)</TD><TD PORT="fdc">GPIO19 · entrada (pull-up)</TD></TR>
+      <TR><TD PORT="a32">GPIO32 · ADC1_CH4 (temp.)</TD><TD PORT="dbg">GPIO23 · pin de temporización</TD></TR>
+      <TR><TD PORT="pwr_in" BGCOLOR="#E2E8F0">VIN 5 V / 3V3 / GND</TD><TD BGCOLOR="#FFFFFF">FreeRTOS · Tareas A–E</TD></TR>
+      <TR><TD PORT="usb" BGCOLOR="#E2E8F0">Micro USB (CP2102)</TD><TD PORT="ant">Antena Wi-Fi 2.4 GHz</TD></TR>
+      </TABLE>>];
+
+    acond [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FFFBEA">
+      <TR><TD><B>prot : Acondicionamiento</B></TD></TR>
+      <TR><TD>R serie 1 kΩ</TD></TR>
+      <TR><TD>rango útil ≈ 0.15–2.45 V (ADC 12 dB)</TD></TR></TABLE>>];
+
+    pot1 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FEF3C7">
+      <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white"><B>potSpO2 : Potenciómetro 10 kΩ</B></FONT></TD></TR>
+      <TR><TD>R 3.3 kΩ a 3.3 V → 0–2.45 V → 80–100 %</TD></TR></TABLE>>];
+    pot2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FEF3C7">
+      <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white"><B>potT : Potenciómetro 10 kΩ</B></FONT></TD></TR>
+      <TR><TD>R 3.3 kΩ a 3.3 V → 0–2.45 V → 35–41 °C</TD></TR></TABLE>>];
+
+    valv [label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#E6F4EA">
+      <TR><TD BGCOLOR="#2F855A"><FONT COLOR="white"><B>valv : Válvula de O₂ simulada</B></FONT></TD></TR>
+      <TR><TD PORT="servo">servo : SG90 (señal · 5 V · GND)</TD></TR>
+      <TR><TD PORT="sw">fdc : Final de carrera (NO → GND)</TD></TR></TABLE>>];
+
+    pwr [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#EDF2F7">
+      <TR><TD BGCOLOR="#4A5568"><FONT COLOR="white"><B>pwr : Alimentación</B></FONT></TD></TR>
+      <TR><TD>USB 5 V → AMS1117 → 3.3 V<BR/>GND común con el generador</TD></TR></TABLE>>];
+  }
+
+  gen [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FEF3C7">
+      <TR><TD BGCOLOR="#B7791F"><FONT COLOR="white"><B>«external» Generador de señal</B></FONT></TD></TR>
+      <TR><TD>pulso 0.8–2.5 Hz (48–150 lpm)</TD></TR>
+      <TR><TD>offset 1.3 V · amplitud pico ≤ 1.0 V</TD></TR></TABLE>>];
+  pc  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>«external» Laptop / cargador USB</TD></TR></TABLE>>];
+  ap  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>«external» Router Wi-Fi</TD></TR></TABLE>>];
+  tb  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F3E8FF"><TR><TD>«external» ThingsBoard<BR/>MQTT :1883</TD></TR></TABLE>>];
+  osc [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>Osciloscopio<BR/>(validación RNF-01)</TD></TR></TABLE>>];
+
+  gen -> acond [label="señal PPG emulada", arrowhead=normal];
+  acond -> esp:a34 [arrowhead=normal];
+  pot1 -> esp:a35 [label="cursor", arrowhead=normal];
+  pot2 -> esp:a32 [label="cursor", arrowhead=normal];
+  esp:pwm -> valv:servo [label="PWM", color="#C53030", fontcolor="#C53030", arrowhead=normal];
+  valv:sw -> esp:fdc [label="estado real", color="#2F855A", fontcolor="#2F855A", arrowhead=normal];
+  esp:ant -> ap [label="Wi-Fi 802.11n", style=dashed];
+  ap -> tb [label="MQTT/TCP", style=dashed];
+  esp:dbg -> osc [style=dotted];
+  pc -> esp:usb [label="5 V + UART", arrowhead=normal];
+  pwr -> esp:pwr_in [label="3.3 V / 5 V"];
+  pwr -> valv:servo [label="5 V servo", style=dashed];
+}

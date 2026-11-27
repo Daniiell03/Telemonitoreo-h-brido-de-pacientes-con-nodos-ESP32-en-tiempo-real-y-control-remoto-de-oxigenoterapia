@@ -1,0 +1,52 @@
+digraph ConOps {
+  graph [rankdir=LR, fontname="DejaVu Sans", nodesep=0.45, ranksep=0.55, pad=0.3, newrank=true,
+         label="ConOps — Flujo de datos de extremo a extremo (sensor → nube → operador → actuador)", labelloc=t, fontsize=16];
+  node  [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#FFFFFF", penwidth=1.2];
+  edge  [fontname="DejaVu Sans", fontsize=9, color="#333333"];
+
+  subgraph cluster_pac {
+    label="Domicilio del paciente (zona rural)"; style="rounded,dashed"; color="#888888"; fontsize=12;
+    pac [label="Paciente", fillcolor="#FFF4E0", color="#B7791F"];
+    sens [label="Sensores\nMAX30102 · MLX90614\n(o señales emuladas)", fillcolor="#FEF3C7"];
+    subgraph cluster_esp {
+      label="Nodo ESP32 + FreeRTOS"; style="rounded,filled"; fillcolor="#EAF2FB"; color="#2B6CB0"; fontsize=11;
+      ta [label="Tarea A\nMuestreo 20 ms\ncálculo FC/SpO₂"];
+      tb_ [label="Tarea B\nControl local\numbral SpO₂"];
+      tc [label="Tarea C\nWi-Fi · MQTT\nbuffer offline"];
+      td [label="Tarea D\nOLED"];
+    }
+    act [label="Válvula de O₂\nservo + final de carrera", fillcolor="#E6F4EA", color="#2F855A"];
+  }
+
+  ap [label="Router Wi-Fi\n/ internet", shape=cylinder, fillcolor="#F0F0F0"];
+
+  subgraph cluster_cloud {
+    label="Nube — ThingsBoard"; style="rounded,filled"; fillcolor="#F3E8FF"; color="#6B46C1"; fontsize=12;
+    mqtt [label="Broker MQTT\nv1/devices/me/telemetry"];
+    rule [label="Motor de reglas\nalarmas (SpO₂, T, FC)"];
+    db [label="Base de datos\nseries de tiempo", shape=cylinder];
+    dash [label="Dashboard\ngráficas · alarmas · widget RPC"];
+  }
+
+  op [label="Personal de salud\n(EBAIS / hospital)", fillcolor="#FFF4E0", color="#B7791F"];
+
+  pac -> sens [label="① señal fisiológica"];
+  sens -> ta [label="② I2C / ADC1"];
+  ta -> tc [label="③ q_telemetria"];
+  ta -> tb_ [label="mb_vitales"];
+  ta -> td [label="mb_vitales", style=dashed];
+  tc -> ap [label="④ JSON / MQTT"];
+  ap -> mqtt;
+  mqtt -> rule [label="⑤"];
+  rule -> db; rule -> dash [label="⑥ alarma"];
+  db -> dash;
+  dash -> op [label="⑦ visualiza"];
+  op -> dash [label="⑧ comando RPC", color="#C53030", fontcolor="#C53030"];
+  dash -> mqtt [label="v1/devices/me/rpc/request", color="#C53030", fontcolor="#C53030", constraint=false];
+  mqtt -> ap [color="#C53030", constraint=false];
+  ap -> tc [label="⑨", color="#C53030", fontcolor="#C53030", constraint=false];
+  tc -> tb_ [label="⑩ q_comandos", color="#C53030", fontcolor="#C53030"];
+  tb_ -> act [label="⑪ PWM", color="#C53030", fontcolor="#C53030"];
+  act -> tb_ [label="⑫ estado real", style=dashed, color="#2F855A", fontcolor="#2F855A"];
+  tb_ -> tc [label="mb_actuador", style=dashed, color="#2F855A", fontcolor="#2F855A"];
+}

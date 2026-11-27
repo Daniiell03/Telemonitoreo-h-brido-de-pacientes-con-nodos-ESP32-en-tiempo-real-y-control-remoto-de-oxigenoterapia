@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="1000" viewBox="0 0 1640 1000" font-family="DejaVu Sans, sans-serif"><defs><marker id="a333" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker><marker id="s333" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#333"/></marker><marker id="aC53030" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C53030"/></marker><marker id="sC53030" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#C53030"/></marker><marker id="a2F855A" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2F855A"/></marker><marker id="s2F855A" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#2F855A"/></marker><marker id="aB7791F" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#B7791F"/></marker><marker id="sB7791F" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#B7791F"/></marker><marker id="a6B46C1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6B46C1"/></marker><marker id="s6B46C1" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#6B46C1"/></marker><marker id="a4A5568" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#4A5568"/></marker><marker id="s4A5568" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#4A5568"/></marker></defs><rect width="100%" height="100%" fill="white"/><text x="820.0" y="38" text-anchor="middle" font-size="20" font-weight="bold">Arquitectura de software FreeRTOS — Nodo paciente (firmware común, ESP-IDF v5.5)</text>
+<rect x="20" y="70" width="210" height="880" rx="14" fill="#F7FAFC" stroke="#718096" stroke-width="2"/>
+<text x="125.0" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#718096">Periféricos</text>
+<rect x="270" y="70" width="470" height="880" rx="14" fill="#EBF8FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="505.0" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#2B6CB0">Núcleo 1 (APP_CPU) — tiempo real</text>
+<rect x="1100" y="170" width="520" height="780" rx="14" fill="#FAF5FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="1420" y="192" text-anchor="middle" font-size="14" font-weight="bold" fill="#6B46C1">Núcleo 0 (PRO_CPU) — red y supervisión</text>
+<text x="920" y="100" text-anchor="middle" font-size="14" font-weight="bold" fill="#2D3748">Comunicación entre tareas</text>
+<rect x="40" y="130" width="170" height="72" rx="8" fill="#FEF3C7" stroke="#B7791F" stroke-width="1.5" />
+<text x="52" y="152" font-size="12.5" font-weight="bold">Bus I2C · 400 kHz</text>
+<text x="52" y="170" font-size="12.5">MAX30102 · MLX90614</text>
+<text x="52" y="188" font-size="12.5">OLED SSD1306</text>
+<rect x="40" y="345" width="170" height="72" rx="8" fill="#FEF3C7" stroke="#B7791F" stroke-width="1.5" />
+<text x="52" y="367" font-size="12.5" font-weight="bold">ADC1 (nodo emulado)</text>
+<text x="52" y="385" font-size="12.5">GPIO34 · 35 · 32</text>
+<text x="52" y="403" font-size="12.5">atenuación 12 dB</text>
+<polygon points="50,236 200,236 218,274.0 200,312 50,312 32,274.0" fill="#FEFCBF" stroke="#B7791F" stroke-width="1.5"/>
+<text x="125.0" y="263.0" text-anchor="middle" font-size="12" font-weight="bold">mtx_i2c</text>
+<text x="125.0" y="279.0" text-anchor="middle" font-size="12">Mutex · herencia</text>
+<text x="125.0" y="295.0" text-anchor="middle" font-size="12">de prioridad</text>
+<rect x="40" y="560" width="170" height="56" rx="8" fill="#E6F4EA" stroke="#2F855A" stroke-width="1.5" />
+<text x="52" y="582" font-size="12.5" font-weight="bold">LEDC PWM 50 Hz</text>
+<text x="52" y="600" font-size="12.5">GPIO18 → servo SG90</text>
+<rect x="40" y="680" width="170" height="56" rx="8" fill="#E6F4EA" stroke="#2F855A" stroke-width="1.5" />
+<text x="52" y="702" font-size="12.5" font-weight="bold">GPIO entrada</text>
+<text x="52" y="720" font-size="12.5">GPIO19 ← final de carrera</text>
+<rect x="300" y="110" width="410" height="178" rx="8" fill="#FFFFFF" stroke="#C53030" stroke-width="2.5" />
+<path d="M300,118 a8,8 0 0 1 8,-8 h394 a8,8 0 0 1 8,8 v18 h-410 z" fill="#C53030"/>
+<text x="505.0" y="128" text-anchor="middle" font-weight="bold" fill="white" font-size="14">Tarea A · Muestreo (crítica)</text>
+<text x="312" y="156" font-size="12.5">Prioridad: 5  ·  fijada al núcleo 1</text>
+<text x="312" y="174" font-size="12.5">Periodo: 20 ms con vTaskDelayUntil()</text>
+<text x="312" y="192" font-size="12.5">Cómputo estimado: ≤ 2 ms  ·  Pila: 4096 B</text>
+<text x="312" y="210" font-size="12.5">Lee sensores (I2C) o ADC1 (nodo emulado)</text>
+<text x="312" y="228" font-size="12.5">Calcula FC, SpO₂ y T → publica a 1 Hz</text>
+<text x="312" y="246" font-size="12.5">Marca de tiempo + GPIO23 para medir jitter</text>
+<rect x="300" y="500" width="410" height="170" rx="8" fill="#FFFFFF" stroke="#DD6B20" stroke-width="2.5" />
+<path d="M300,508 a8,8 0 0 1 8,-8 h394 a8,8 0 0 1 8,8 v18 h-410 z" fill="#DD6B20"/>
+<text x="505.0" y="518" text-anchor="middle" font-weight="bold" fill="white" font-size="14">Tarea B · Control local</text>
+<text x="312" y="546" font-size="12.5">Prioridad: 4  ·  fijada al núcleo 1</text>
+<text x="312" y="564" font-size="12.5">Activación: comando RPC o cada 100 ms</text>
+<text x="312" y="582" font-size="12.5">Cómputo estimado: ≤ 1 ms  ·  Pila: 3072 B</text>
+<text x="312" y="600" font-size="12.5">SpO₂ &lt; umbral → abre válvula (aun sin red)</text>
+<text x="312" y="618" font-size="12.5">Verifica estado real con final de carrera</text>
+<rect x="300" y="750" width="410" height="170" rx="8" fill="#FFFFFF" stroke="#2C7A7B" stroke-width="2.5" />
+<path d="M300,758 a8,8 0 0 1 8,-8 h394 a8,8 0 0 1 8,8 v18 h-410 z" fill="#2C7A7B"/>
+<text x="505.0" y="768" text-anchor="middle" font-weight="bold" fill="white" font-size="14">Tarea D · Interfaz local</text>
+<text x="312" y="796" font-size="12.5">Prioridad: 3  ·  fijada al núcleo 1</text>
+<text x="312" y="814" font-size="12.5">Periodo: 500 ms  ·  Pila: 3072 B</text>
+<text x="312" y="832" font-size="12.5">OLED por páginas: 8 × ~3 ms, libera</text>
+<text x="312" y="850" font-size="12.5">mtx_i2c entre páginas → bloqueo de A acotado</text>
+<text x="312" y="868" font-size="12.5">Nodo 2: resumen por log serie</text>
+<rect x="790" y="150" width="260" height="72" rx="14" fill="#C6F6D5" stroke="#2F855A" stroke-width="1.5"/>
+<text x="920.0" y="175.0" text-anchor="middle" font-size="12" font-weight="bold">q_telemetria</text>
+<text x="920.0" y="191.0" text-anchor="middle" font-size="12">Cola · 20 × telemetria_t</text>
+<text x="920.0" y="207.0" text-anchor="middle" font-size="12">xQueueSend(…, 0) — nunca bloquea a A</text>
+<rect x="790" y="330" width="260" height="72" rx="14" fill="#C6F6D5" stroke="#2F855A" stroke-width="1.5"/>
+<text x="920.0" y="355.0" text-anchor="middle" font-size="12" font-weight="bold">mb_vitales</text>
+<text x="920.0" y="371.0" text-anchor="middle" font-size="12">Buzón (cola de longitud 1)</text>
+<text x="920.0" y="387.0" text-anchor="middle" font-size="12">xQueueOverwrite / xQueuePeek</text>
+<rect x="790" y="480" width="260" height="72" rx="14" fill="#FED7D7" stroke="#C53030" stroke-width="1.5"/>
+<text x="920.0" y="505.0" text-anchor="middle" font-size="12" font-weight="bold">q_comandos</text>
+<text x="920.0" y="521.0" text-anchor="middle" font-size="12">Cola · 5 × comando_t</text>
+<text x="920.0" y="537.0" text-anchor="middle" font-size="12">setValvula · setUmbralSpO2</text>
+<rect x="790" y="640" width="260" height="72" rx="14" fill="#C6F6D5" stroke="#2F855A" stroke-width="1.5"/>
+<text x="920.0" y="665.0" text-anchor="middle" font-size="12" font-weight="bold">mb_actuador</text>
+<text x="920.0" y="681.0" text-anchor="middle" font-size="12">Buzón (longitud 1)</text>
+<text x="920.0" y="697.0" text-anchor="middle" font-size="12">comandada · estadoReal</text>
+<path d="M1120,82 a100.0,10 0 0 1 200,0 v50 a100.0,10 0 0 1 -200,0 z" fill="#F3E8FF" stroke="#6B46C1" stroke-width="1.5"/>
+<path d="M1120,82 a100.0,10 0 0 0 200,0" fill="none" stroke="#6B46C1" stroke-width="1.5"/>
+<text x="1220.0" y="104.0" text-anchor="middle" font-size="12" font-weight="bold">ThingsBoard</text>
+<text x="1220.0" y="120.0" text-anchor="middle" font-size="12">broker MQTT :1883</text>
+<rect x="1130" y="205" width="300" height="190" rx="8" fill="#FFFFFF" stroke="#6B46C1" stroke-width="2.5" />
+<path d="M1130,213 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#6B46C1"/>
+<text x="1280.0" y="223" text-anchor="middle" font-weight="bold" fill="white" font-size="14">Tarea C · Comunicaciones</text>
+<text x="1142" y="251" font-size="12.5">Prioridad: 2  ·  fijada al núcleo 0</text>
+<text x="1142" y="269" font-size="12.5">Publicación: cada 1000 ms  ·  Pila: 6144 B</text>
+<text x="1142" y="287" font-size="12.5">q_telemetria → JSON → MQTT (QoS 1)</text>
+<text x="1142" y="305" font-size="12.5">RPC recibido → q_comandos</text>
+<text x="1142" y="323" font-size="12.5">Espera eg_red con timeout:</text>
+<text x="1142" y="341" font-size="12.5">sin while(!connected)</text>
+<rect x="1462" y="235" width="140" height="110" rx="8" fill="#FFFFFF" stroke="#6B46C1" stroke-width="1.5" />
+<text x="1474" y="257" font-size="12.5" font-weight="bold">rb_offline</text>
+<text x="1474" y="275" font-size="12.5">Buffer circular</text>
+<text x="1474" y="293" font-size="12.5">300 muestras</text>
+<text x="1474" y="311" font-size="12.5">(5 min a 1 Hz)</text>
+<polygon points="1144,440 1326,440 1340,454 1340,506 1326,520 1144,520 1130,506 1130,454" fill="#E9D8FD" stroke="#6B46C1" stroke-width="1.5"/>
+<text x="1235.0" y="469.0" text-anchor="middle" font-size="12" font-weight="bold">eg_red</text>
+<text x="1235.0" y="485.0" text-anchor="middle" font-size="12">Event group</text>
+<text x="1235.0" y="501.0" text-anchor="middle" font-size="12">WIFI_OK · MQTT_OK</text>
+<rect x="1360" y="430" width="240" height="118" rx="8" fill="#EDF2F7" stroke="#A0AEC0" stroke-width="1.5" />
+<text x="1372" y="452" font-size="12.5" font-weight="bold">Tareas del sistema (ESP-IDF)</text>
+<text x="1372" y="470" font-size="12.5">wifi (23) · esp_event (20)</text>
+<text x="1372" y="488" font-size="12.5">tcpip / lwIP (18)</text>
+<text x="1372" y="506" font-size="12.5">mqtt_task (5) en núcleo 0</text>
+<text x="1372" y="524" font-size="12.5">Reconexión por eventos</text>
+<rect x="1130" y="700" width="460" height="170" rx="8" fill="#FFFFFF" stroke="#4A5568" stroke-width="2.5" />
+<path d="M1130,708 a8,8 0 0 1 8,-8 h444 a8,8 0 0 1 8,8 v18 h-460 z" fill="#4A5568"/>
+<text x="1360.0" y="718" text-anchor="middle" font-weight="bold" fill="white" font-size="14">Tarea E · Supervisor</text>
+<text x="1142" y="746" font-size="12.5">Prioridad: 1  ·  fijada al núcleo 0</text>
+<text x="1142" y="764" font-size="12.5">Periodo: 1000 ms  ·  Pila: 3072 B</text>
+<text x="1142" y="782" font-size="12.5">Task Watchdog (5 s) suscrito por A, B y C</text>
+<text x="1142" y="800" font-size="12.5">Heap libre y stack high-water de cada tarea</text>
+<text x="1142" y="818" font-size="12.5">Contador de periodos perdidos de la tarea A</text>
+<text x="1142" y="836" font-size="12.5">→ métricas en la telemetría (para el artículo)</text>
+<path d="M210,166 L298,166" fill="none" stroke="#333" stroke-width="1.8"  marker-end="url(#a333)" marker-start="url(#s333)"/>
+<text x="254" y="158" text-anchor="middle" font-size="11.5" fill="#333" paint-order="stroke" stroke="white" stroke-width="4">lectura</text>
+<path d="M210,380 L298,262" fill="none" stroke="#333" stroke-width="1.8"  marker-end="url(#a333)" />
+<text x="262" y="330" text-anchor="middle" font-size="11.5" fill="#333" paint-order="stroke" stroke="white" stroke-width="4">lectura</text>
+<path d="M125,236 L125,205" fill="none" stroke="#B7791F" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#aB7791F)" />
+<text x="170" y="226" text-anchor="middle" font-size="11.5" fill="#B7791F" paint-order="stroke" stroke="white" stroke-width="4">protege</text>
+<path d="M218,266 L298,240" fill="none" stroke="#B7791F" stroke-width="1.8" stroke-dasharray="6 4"  />
+<path d="M218,282 L250,282 L250,830 L298,830" fill="none" stroke="#B7791F" stroke-width="1.8" stroke-dasharray="6 4"  />
+<path d="M710,175 L788,180" fill="none" stroke="#333" stroke-width="1.8"  marker-end="url(#a333)" />
+<text x="748" y="168" text-anchor="middle" font-size="11.5" fill="#333" paint-order="stroke" stroke="white" stroke-width="4">1 Hz</text>
+<path d="M1050,186 L1090,186 L1090,250 L1128,250" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<path d="M710,262 L788,358" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<text x="760" y="300" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">overwrite</text>
+<path d="M790,385 L712,540" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<text x="742" y="470" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">peek</text>
+<path d="M790,396 L765,396 L765,810 L712,810" fill="none" stroke="#2F855A" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#a2F855A)" />
+<text x="765" y="610" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">peek</text>
+<path d="M1128,370 L1052,505" fill="none" stroke="#C53030" stroke-width="1.8"  marker-end="url(#aC53030)" />
+<text x="1085" y="425" text-anchor="middle" font-size="11.5" fill="#C53030" paint-order="stroke" stroke="white" stroke-width="4">RPC</text>
+<path d="M790,520 L712,580" fill="none" stroke="#C53030" stroke-width="1.8"  marker-end="url(#aC53030)" />
+<path d="M300,592 L212,590" fill="none" stroke="#C53030" stroke-width="1.8"  marker-end="url(#aC53030)" />
+<text x="256" y="582" text-anchor="middle" font-size="11.5" fill="#C53030" paint-order="stroke" stroke="white" stroke-width="4">PWM</text>
+<path d="M210,708 L298,650" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<text x="254" y="668" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">estado real</text>
+<path d="M710,640 L788,668" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<path d="M1050,676 L1075,676 L1075,385 L1128,385" fill="none" stroke="#2F855A" stroke-width="1.8"  marker-end="url(#a2F855A)" />
+<text x="1075" y="600" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">peek</text>
+<path d="M790,698 L712,880" fill="none" stroke="#2F855A" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#a2F855A)" />
+<text x="800" y="790" text-anchor="middle" font-size="11.5" fill="#2F855A" paint-order="stroke" stroke="white" stroke-width="4">peek</text>
+<path d="M1360,478 L1342,478" fill="none" stroke="#6B46C1" stroke-width="1.8"  marker-end="url(#a6B46C1)" />
+<path d="M1235,440 L1235,397" fill="none" stroke="#6B46C1" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#a6B46C1)" />
+<text x="1240" y="425" text-anchor="middle" font-size="11.5" fill="#6B46C1" paint-order="stroke" stroke="white" stroke-width="4">espera c/ timeout</text>
+<path d="M1434,290 L1460,290" fill="none" stroke="#6B46C1" stroke-width="1.8"  marker-end="url(#a6B46C1)" marker-start="url(#s6B46C1)"/>
+<path d="M1190,203 L1190,144" fill="none" stroke="#6B46C1" stroke-width="1.8"  marker-end="url(#a6B46C1)" marker-start="url(#s6B46C1)"/>
+<text x="1262" y="180" text-anchor="middle" font-size="11.5" fill="#6B46C1" paint-order="stroke" stroke="white" stroke-width="4">telemetría / RPC</text>
+<path d="M1128,728 L742,728" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="2 4" marker-end="url(#a4A5568)" />
+<text x="940" y="745" text-anchor="middle" font-size="11.5" fill="#4A5568" paint-order="stroke" stroke="white" stroke-width="4">monitorea A, B, D</text>
+<rect x="790" y="820" width="290" height="120" rx="8" fill="white" stroke="#CBD5E0"/>
+<line x1="805" y1="845" x2="850" y2="845" stroke="#2F855A" stroke-width="2.5" />
+<text x="860" y="849" font-size="12">Datos (telemetría, estado)</text>
+<line x1="805" y1="869" x2="850" y2="869" stroke="#C53030" stroke-width="2.5" />
+<text x="860" y="873" font-size="12">Comandos (RPC → actuador)</text>
+<line x1="805" y1="893" x2="850" y2="893" stroke="#B7791F" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="860" y="897" font-size="12">Acceso protegido por mutex</text>
+<line x1="805" y1="917" x2="850" y2="917" stroke="#4A5568" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="860" y="921" font-size="12">Supervisión</text></svg>

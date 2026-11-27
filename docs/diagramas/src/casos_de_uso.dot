@@ -1,0 +1,38 @@
+digraph UC {
+  graph [rankdir=LR, fontname="DejaVu Sans", nodesep=0.3, ranksep=1.1, pad=0.3, newrank=true,
+         label="uc [Paquete] Telemonitoreo híbrido — Casos de uso", labelloc=t, fontsize=16];
+  node  [fontname="DejaVu Sans", fontsize=11];
+  edge  [fontname="DejaVu Sans", fontsize=9, arrowhead=none];
+
+  node [shape=box, style="rounded,filled", fillcolor="#FFF4E0", color="#B7791F", penwidth=1.4];
+  paciente [label="«actor»\nPaciente"];
+  personal [label="«actor»\nPersonal de salud\n(operador)"];
+  tb [label="«sistema externo»\nThingsBoard", fillcolor="#F0F0F0", color="#555555"];
+
+  subgraph cluster_sys {
+    label="Sistema de telemonitoreo"; style=rounded; color="#555555"; fontsize=13;
+    node [shape=ellipse, style=filled, fillcolor="#EAF2FB", color="#2B6CB0", penwidth=1];
+    uc1 [label="UC1  Medir signos vitales\n(FC, SpO₂, temperatura)"];
+    uc2 [label="UC2  Ver signos vitales\nen la interfaz local"];
+    uc3 [label="UC3  Abrir válvula de O₂\nautomáticamente"];
+    uc4 [label="UC4  Operar sin conexión\ny reenviar datos"];
+    uc5 [label="UC5  Monitorear pacientes\nen tiempo real"];
+    uc6 [label="UC6  Recibir alarma\nde evento crítico"];
+    uc7 [label="UC7  Abrir/cerrar válvula\nde O₂ por RPC"];
+    uc8 [label="UC8  Ajustar umbral\nde SpO₂ por RPC"];
+    uc9 [label="UC9  Consultar historial"];
+  }
+
+  paciente -> uc1; paciente -> uc2;
+  personal -> uc5; personal -> uc6; personal -> uc7; personal -> uc8; personal -> uc9;
+  uc5 -> tb; uc6 -> tb; uc7 -> tb; uc8 -> tb; uc9 -> tb;
+
+  uc3 -> uc1 [style=dashed, arrowhead=open, label="«include»", constraint=false];
+  uc4 -> uc1 [style=dashed, arrowhead=open, label="«extend»", constraint=false];
+
+  // ordering helpers
+  uc1 -> uc3 -> uc4 [style=invis];
+  uc2 -> uc5 [style=invis];
+  {rank=same; paciente; personal;}
+  {rank=same; uc1; uc2; uc5; uc6; uc7; uc8; uc9;}
+}

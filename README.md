@@ -80,7 +80,11 @@ Alarma crítica en ThingsBoard cuando **SpO₂ < 90 %**, **temperatura > 38 °C*
 
 - `q_telemetria`: cola A → C con la telemetría procesada.
 - `q_comandos`: cola C → B con los comandos RPC.
+- `mb_vitales` y `mb_actuador`: buzones (colas de longitud 1) con el dato más reciente para B, C y D.
 - `mtx_i2c`: mutex que protege el bus I2C compartido por MAX30102, MLX90614 y OLED (con herencia de prioridad).
+- `eg_red`: event group con los bits `WIFI_OK` y `MQTT_OK` para la reconexión asíncrona.
+
+El detalle completo está en [`docs/diagramas/freertos.svg`](docs/diagramas/freertos.svg).
 
 **Tolerancia a fallos de red:** reconexión a Wi-Fi y al broker por eventos, sin bucles `while(!connected)`. Durante la desconexión, las tareas A y B siguen ejecutándose y la tarea C almacena la telemetría para reenviarla al recuperar la red.
 
@@ -128,23 +132,40 @@ Alarma crítica en ThingsBoard cuando **SpO₂ < 90 %**, **temperatura > 38 °C*
 | Resistencias 1 kΩ, protoboards, cables | — | 1 y 2 |
 | Generador de señal (laboratorio) | 1 | 2 |
 
-> Las señales emuladas se conectan al **ADC1 (GPIO32–39)**, ya que el ADC2 no está disponible con el Wi-Fi activo. Rango de entrada: 0–3.3 V.
+> Las señales emuladas se conectan al **ADC1 (GPIO32–39)**, ya que el ADC2 no está disponible con el Wi-Fi activo. Con atenuación de 12 dB el rango útil es de ~0.15 a 2.45 V: el generador usa offset de 1.3 V y amplitud pico ≤ 1.0 V, y cada potenciómetro lleva una resistencia de 3.3 kΩ en serie hacia 3.3 V. Ver [`docs/diagramas/ibd_nodo_emulado.svg`](docs/diagramas/ibd_nodo_emulado.svg).
 
 ---
 
-## 6. Estructura del repositorio
+## 6. Documentación de diseño (E1)
+
+| Documento | Contenido |
+|---|---|
+| [Justificación ODS](docs/ods.md) | Problema en Costa Rica, ODS 3 meta 3.8 y referencias |
+| [Matriz de requerimientos](docs/requerimientos.md) | Requerimientos funcionales y no funcionales con su verificación |
+| [Casos de uso](docs/diagramas/casos_de_uso.svg) · [ConOps](docs/diagramas/conops.svg) | Modelado del comportamiento |
+| [BDD](docs/diagramas/bdd.svg) · [IBD nodo real](docs/diagramas/ibd_nodo_real.svg) · [IBD nodo emulado](docs/diagramas/ibd_nodo_emulado.svg) | Modelado estructural SysML |
+| [Arquitectura FreeRTOS](docs/diagramas/freertos.svg) | Tareas, prioridades, colas, mutex y núcleos |
+| [Maqueta del dashboard](docs/dashboard/dashboard_maqueta.png) | Prototipo conceptual de ThingsBoard |
+
+---
+
+## 7. Estructura del repositorio
 
 ```
 ├── firmware/        # Proyecto ESP-IDF común a ambos nodos
 ├── thingsboard/     # Exportaciones del dashboard y cadena de reglas
-├── docs/            # Diagramas SysML, FreeRTOS, ConOps y presentación E1
+├── docs/            # Material de diseño E1 (ver docs/README.md)
+│   ├── ods.md
+│   ├── requerimientos.md
+│   ├── diagramas/   # Casos de uso, ConOps, BDD, IBD, FreeRTOS (SVG + PNG + fuentes)
+│   └── dashboard/   # Maqueta del dashboard de ThingsBoard
 ├── paper/           # Artículo IEEE (E3)
 └── README.md
 ```
 
 ---
 
-## 7. Compilación y carga
+## 8. Compilación y carga
 
 Requisitos: **ESP-IDF v5.5** en Linux.
 
@@ -161,7 +182,7 @@ Salir del monitor: `Ctrl + ]`.
 
 ---
 
-## 8. Cronograma
+## 9. Cronograma
 
 | Entregable | Fecha | Valor |
 |---|---|---|
@@ -171,14 +192,14 @@ Salir del monitor: `Ctrl + ]`.
 
 ---
 
-## 9. Avances por rol
+## 10. Avances por rol
 
 ### Daniel Chavarría — Rol A
 
 | Fecha | Avance | Commit / evidencia |
 |---|---|---|
 | 26/11/2026 | Instalación de ESP-IDF v5.5 y prueba `hello_world` en ESP32 | — |
-| | | |
+| 27/11/2026 | Material de diseño E1: ODS, requerimientos, diagramas SysML, FreeRTOS y maqueta del dashboard | `docs/` |
 
 ### Saúl Quesada — Rol B
 
@@ -188,7 +209,7 @@ Salir del monitor: `Ctrl + ]`.
 
 ---
 
-## 10. Trabajo futuro
+## 11. Trabajo futuro
 
 El proyecto continuará como desarrollo personal después del curso. Líneas previstas:
 

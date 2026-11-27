@@ -1,0 +1,82 @@
+digraph BDD {
+  graph [rankdir=TB, fontname="DejaVu Sans", nodesep=0.3, ranksep=0.7, pad=0.3,
+         label="bdd [Paquete] Telemonitoreo híbrido — Diagrama de Definición de Bloques", labelloc=t, fontsize=16];
+  node  [fontname="DejaVu Sans", fontsize=10, shape=plain];
+  edge  [fontname="DejaVu Sans", fontsize=9, dir=back, arrowtail=diamond];
+
+  // helper macro style: header color by layer
+  sys [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFFF">
+    <TR><TD BGCOLOR="#2D3748"><FONT COLOR="white">«block»<BR/><B>Sistema de Telemonitoreo</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>pacientes: Integer = 2<BR ALIGN="LEFT"/>latenciaRPC_max: ms = 1000<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  nodo [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#2B6CB0"><FONT COLOR="white">«block» {abstract}<BR/><B>Nodo Paciente</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>modo: {REAL, EMULADO}<BR ALIGN="LEFT"/>periodoMuestreo: ms = 20<BR ALIGN="LEFT"/>periodoPublicacion: ms = 1000<BR ALIGN="LEFT"/>umbralSpO2: % = 90<BR ALIGN="LEFT"/></TD></TR>
+    <TR><TD ALIGN="LEFT">operations<BR ALIGN="LEFT"/>muestrear()<BR ALIGN="LEFT"/>controlarValvula()<BR ALIGN="LEFT"/>publicarTelemetria()<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  red [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#718096"><FONT COLOR="white">«block» «external»<BR/><B>Red Wi-Fi / Internet</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>estandar: 802.11 b/g/n 2.4 GHz<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  tbd [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#6B46C1"><FONT COLOR="white">«block» «external»<BR/><B>Plataforma ThingsBoard</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">parts<BR ALIGN="LEFT"/>broker: Broker MQTT<BR ALIGN="LEFT"/>reglas: Motor de Reglas<BR ALIGN="LEFT"/>dash: Dashboard<BR ALIGN="LEFT"/>bd: Series de Tiempo<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  real [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#3182CE"><FONT COLOR="white">«block»<BR/><B>Nodo Real</B> (nodo 1)</FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>modo = REAL<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  emu [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#3182CE"><FONT COLOR="white">«block»<BR/><B>Nodo Emulado</B> (nodo 2)</FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>modo = EMULADO<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  esp [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#2C5282"><FONT COLOR="white">«block»<BR/><B>ESP32 DevKit</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>SoC: ESP32-D0WDQ6 (2× Xtensa LX6)<BR ALIGN="LEFT"/>reloj: MHz = 240<BR ALIGN="LEFT"/>RTOS: FreeRTOS (ESP-IDF v5.5)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  acq [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#B7791F"><FONT COLOR="white">«block» {abstract}<BR/><B>Módulo de Adquisición</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>FC: lpm · SpO2: % · T: °C<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  valv [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#2F855A"><FONT COLOR="white">«block»<BR/><B>Válvula de O₂ simulada</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>comandada: Boolean<BR ALIGN="LEFT"/>estadoReal: Boolean<BR ALIGN="LEFT"/></TD></TR>
+    <TR><TD ALIGN="LEFT">parts<BR ALIGN="LEFT"/>servo: SG90 (PWM 50 Hz)<BR ALIGN="LEFT"/>fdc: Final de carrera<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  pwr [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4A5568"><FONT COLOR="white">«block»<BR/><B>Alimentación</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>entrada: USB 5 V<BR ALIGN="LEFT"/>logica: 3.3 V (AMS1117)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  oled [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#2C7A7B"><FONT COLOR="white">«block»<BR/><B>Interfaz local OLED</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">values<BR ALIGN="LEFT"/>SSD1306 128×64 · I2C 0x3C<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  areal [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white">«block»<BR/><B>Adquisición Real</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">parts<BR ALIGN="LEFT"/>ox: MAX30102 (I2C 0x57)<BR ALIGN="LEFT"/>temp: MLX90614 (I2C 0x5A)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  aemu [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white">«block»<BR/><B>Adquisición Emulada</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT">parts<BR ALIGN="LEFT"/>gen: Generador de señal (pulso)<BR ALIGN="LEFT"/>potSpO2: Potenciómetro 10 kΩ<BR ALIGN="LEFT"/>potT: Potenciómetro 10 kΩ<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+
+  sys -> nodo [taillabel="1", headlabel="2..*  "];
+  sys -> red [taillabel="1", headlabel="1"];
+  sys -> tbd [taillabel="1", headlabel="1"];
+
+  // generalizations
+  edge [dir=back, arrowtail=empty, style=solid];
+  nodo -> real; nodo -> emu;
+
+  edge [dir=back, arrowtail=diamond];
+  nodo -> esp [headlabel="1"];
+  nodo -> acq [headlabel="1"];
+  nodo -> valv [headlabel="1"];
+  nodo -> pwr [headlabel="1"];
+  real -> oled [headlabel="1"];
+
+  edge [dir=back, arrowtail=empty];
+  acq -> areal; acq -> aemu;
+
+  // composition of specialized nodes with specialized acquisition (redefinition)
+  edge [dir=back, arrowtail=diamond, style=dashed, fontcolor="#555555"];
+  real -> areal [label="«redefines» adq", constraint=false];
+  emu -> aemu [label="«redefines» adq", constraint=false];
+}

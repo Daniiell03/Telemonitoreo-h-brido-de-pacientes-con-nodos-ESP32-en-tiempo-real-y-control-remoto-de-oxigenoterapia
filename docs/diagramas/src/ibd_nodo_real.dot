@@ -1,0 +1,61 @@
+digraph IBD1 {
+  graph [rankdir=LR, fontname="DejaVu Sans", nodesep=0.35, ranksep=1.1, pad=0.3, splines=spline,
+         label="ibd [Bloque] Nodo Real (nodo 1) — Diagrama de Bloques Internos", labelloc=t, fontsize=16];
+  node  [fontname="DejaVu Sans", fontsize=10, shape=plain];
+  edge  [fontname="DejaVu Sans", fontsize=9, arrowhead=none, penwidth=1.3];
+
+  subgraph cluster_nodo {
+    label="«block» Nodo Real"; style="rounded"; color="#2B6CB0"; penwidth=2; fontsize=13;
+
+    esp [label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#EAF2FB">
+      <TR><TD COLSPAN="2" BGCOLOR="#2C5282"><FONT COLOR="white"><B>mcu : ESP32 DevKit</B></FONT></TD></TR>
+      <TR><TD PORT="pwr_in" BGCOLOR="#E2E8F0">VIN 5 V / 3V3 / GND</TD><TD PORT="sda">GPIO21 · I2C SDA</TD></TR>
+      <TR><TD ROWSPAN="3" BGCOLOR="#FFFFFF">FreeRTOS<BR/>Tareas A–E</TD><TD PORT="scl">GPIO22 · I2C SCL</TD></TR>
+      <TR><TD PORT="pwm">GPIO18 · LEDC PWM 50 Hz</TD></TR>
+      <TR><TD PORT="fdc">GPIO19 · entrada (pull-up)</TD></TR>
+      <TR><TD BGCOLOR="#FFFFFF">USB-UART CP2102</TD><TD PORT="dbg">GPIO23 · pin de temporización</TD></TR>
+      <TR><TD PORT="usb" BGCOLOR="#E2E8F0">Micro USB</TD><TD PORT="ant">Antena Wi-Fi 2.4 GHz</TD></TR>
+      </TABLE>>];
+
+    bus [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#FFFBEA">
+      <TR><TD><B>i2c : Bus I2C 400 kHz</B></TD></TR>
+      <TR><TD><I>protegido por mtx_i2c</I></TD></TR>
+      <TR><TD>pull-ups 4.7 kΩ a 3.3 V</TD></TR></TABLE>>];
+
+    max [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FEF3C7">
+      <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white"><B>ox : MAX30102</B></FONT></TD></TR>
+      <TR><TD>dir. 0x57 · FC y SpO₂</TD></TR></TABLE>>];
+    mlx [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#FEF3C7">
+      <TR><TD BGCOLOR="#D69E2E"><FONT COLOR="white"><B>temp : MLX90614</B></FONT></TD></TR>
+      <TR><TD>dir. 0x5A · temperatura IR</TD></TR></TABLE>>];
+    oled [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#E6FFFA">
+      <TR><TD BGCOLOR="#2C7A7B"><FONT COLOR="white"><B>ui : OLED SSD1306</B></FONT></TD></TR>
+      <TR><TD>dir. 0x3C · 128×64</TD></TR></TABLE>>];
+
+    valv [label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#E6F4EA">
+      <TR><TD BGCOLOR="#2F855A"><FONT COLOR="white"><B>valv : Válvula de O₂ simulada</B></FONT></TD></TR>
+      <TR><TD PORT="servo">servo : SG90 (señal · 5 V · GND)</TD></TR>
+      <TR><TD PORT="sw">fdc : Final de carrera (NO → GND)</TD></TR></TABLE>>];
+
+    pwr [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#EDF2F7">
+      <TR><TD BGCOLOR="#4A5568"><FONT COLOR="white"><B>pwr : Alimentación</B></FONT></TD></TR>
+      <TR><TD>USB 5 V → AMS1117 → 3.3 V<BR/>GND común</TD></TR></TABLE>>];
+  }
+
+  pc  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>«external» Laptop / cargador USB</TD></TR></TABLE>>];
+  ap  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>«external» Router Wi-Fi</TD></TR></TABLE>>];
+  tb  [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F3E8FF"><TR><TD>«external» ThingsBoard<BR/>MQTT :1883</TD></TR></TABLE>>];
+  osc [label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="5" BGCOLOR="#F7FAFC"><TR><TD>Osciloscopio<BR/>(validación RNF-01)</TD></TR></TABLE>>];
+
+  esp:sda -> bus [label="SDA"];
+  esp:scl -> bus [label="SCL"];
+  bus -> max; bus -> mlx; bus -> oled;
+  esp:pwm -> valv:servo [label="PWM", color="#C53030", fontcolor="#C53030", arrowhead=normal];
+  valv:sw -> esp:fdc [label="estado real", color="#2F855A", fontcolor="#2F855A", arrowhead=normal];
+  esp:ant -> ap [label="Wi-Fi 802.11n", style=dashed];
+  ap -> tb [label="MQTT/TCP", style=dashed];
+  esp:dbg -> osc [style=dotted];
+  pc -> esp:usb [label="5 V + UART", arrowhead=normal];
+  pwr -> esp:pwr_in [label="3.3 V / 5 V"];
+  pwr -> valv:servo [label="5 V servo", style=dashed];
+}
